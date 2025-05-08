@@ -16,14 +16,14 @@ img{
   border-radius: 8px;
 }
 header{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 50px;
-    align-items: center;
-    background-image: linear-gradient(90deg,  #d1e0e0);
-    opacity: 0.85;
-    padding: 20px 30px; 
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  align-items: center;
+  background-image: linear-gradient(90deg,  #c3c8c7);
+  opacity: 0.85;
+  padding: 20px 30px; 
 }
 header a{
     text-decoration: none;
@@ -42,10 +42,12 @@ header a.logout{
     font-weight: bold;
     font-size: 1.2rem;
 }
-header a.logo{
-    font-weight: bold;
-    font-size: 1.8rem;
-   
+header a.logo {
+  font-weight: bold;
+  font-size: 1.8rem;
+  margin: 0;
+  padding: 0;
+  line-height: 1; /* keeps it aligned */
 }
 header a:hover {
     color: #ffdd57; 
@@ -60,9 +62,10 @@ header a.newPost:hover {
 header a.logout:hover {
     color: #FF6347;
 }
-header nav{
-    display: flex;
-    gap: 15px;
+header nav {
+  display: flex;
+  align-items: center; /* aligns items like avatar & links */
+  gap: 15px;
 }
 /* .post img{
     width: 600px;
@@ -279,5 +282,59 @@ div.post-page h1{
       margin-bottom: 20px;
       font-size: .7rem;
       font-weight: bold;
+  }
+  /** Drop Down Profile**/
+  .profile-menu-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;  
+    cursor: pointer;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #333;
+    transition: transform 0.2s;
+    display: block;
+  }
+  
+  .avatar:hover {
+    transform: scale(1.1);
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+    z-index: 100;
+  }
+  
+  .dropdown a,
+  .dropdown button {
+    background: none;
+    border: none;
+    padding: 8px;
+    text-align: left;
+    width: 100%;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .dropdown a:hover,
+  .dropdown button:hover {
+    background-color: #f0f0f0;
   }
   
