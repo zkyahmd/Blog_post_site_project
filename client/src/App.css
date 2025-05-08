@@ -330,6 +330,7 @@ div.post-page h1{
     cursor: pointer;
     text-decoration: none;
     color: #333;
+    font-weight: bold;
   }
   
   .dropdown a:hover {
@@ -429,4 +430,23 @@ div.post-page h1{
 .logout-btn:hover {
   background-color: #f0f0f0;
   color: #000;
+}
+
+/*---Edit Post Styling ---*/
+div.edit-row{
+  text-align: center;
+  margin-bottom: 20px;
+}
+div.post-page a.edit-btn{
+  background-color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  padding:15px 30px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+a svg{
+  height:20px;
 }
