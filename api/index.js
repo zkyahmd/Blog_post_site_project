@@ -65,6 +65,30 @@ app.get('/profile', (req,res) => {
 app.post('/logout', (req,res) => {
   res.cookie('token', '').json('ok');
 });
+// Universal search route 
+app.get('/search', async (req, res) => {
+  const { q } = req.query;
+  if (!q) {
+    return res.status(400).json({ error: 'Search query is required' });
+  }
+
+  try {
+    const regex = new RegExp(q, 'i'); // case-insensitive partial match
+    const results = await Post.find({
+      $or: [
+        { title: regex },
+        { summary: regex },
+        { content: regex }
+      ]
+    }).populate('author', ['username']).sort({ createdAt: -1 });
+    
+    res.json(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error while searching' });
+  }
+});
+/*----*/
 
 app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
   const {originalname,path} = req.file;

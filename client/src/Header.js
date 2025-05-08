@@ -42,7 +42,7 @@ fetch('http://localhost:4000/logout',{
               {menuOpen && (
                 <div className="dropdown">
                   <Link to="/profile">Profile</Link>
-                  <button onClick={logout}>Logout</button>
+                  <button className="logout-btn" onClick={logout}>Logout</button>
                 </div>
               )}
             </div>
