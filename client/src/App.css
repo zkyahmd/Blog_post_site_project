@@ -450,3 +450,143 @@ div.post-page a.edit-btn{
 a svg{
   height:20px;
 }
+
+/*--Profile Page--*/
+.avatar-preview-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.profile-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+}
+
+.profile-avatar.placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.avatar-upload-label {
+  position: absolute;
+  bottom: 5px;
+  right: 120px;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 5px 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.profile-form input {
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  font-size: 1rem;
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-button:hover {
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+}
+
+/* Make profile page responsive */
+@media (max-width: 600px) {
+  .profile-container {
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .profile-avatar-wrapper {
+    margin-bottom: 1rem;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar-upload-label {
+    bottom: 0px;
+    right: 100px;
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  .profile-form input {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .save-button {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}

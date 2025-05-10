@@ -57,12 +57,79 @@ app.post('/login', async (req, res) => {
 });
 
 // Profile
-app.get('/profile', (req, res) => {
+// Profile
+app.get('/profile', async (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, (err, info) => {
+  if (!token) return res.status(401).json('No token');
+
+  jwt.verify(token, secret, {}, async (err, info) => {
     if (err) return res.status(401).json('Invalid token');
-    res.json(info);
+
+    try {
+      const userDoc = await User.findById(info.id);
+      if (!userDoc) return res.status(404).json('User not found');
+
+      res.json({
+        id: userDoc._id,
+        username: userDoc.username,
+        email: userDoc.email,
+        avatar: userDoc.avatar || null,
+      });
+    } catch (error) {
+      console.error('Profile fetch error:', error);
+      res.status(500).json('Server error');
+    }
   });
+});
+
+
+app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json('No token');
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) return res.status(401).json('Token error');
+      const userId = info.id;
+      const { username, email, password } = req.body;
+
+      const updates = { username, email };
+
+      if (password && password.length >= 4) {
+        updates.password = bcrypt.hashSync(password, salt);
+      }
+
+      if (req.file) {
+        const { originalname, path } = req.file;
+        const ext = originalname.split('.').pop();
+        const newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+        updates.avatar = newPath;
+      }
+
+      const userDoc = await User.findByIdAndUpdate(userId, updates, { new: true });
+
+      res.json({
+        id: userDoc._id,
+        username: userDoc.username,
+        email: userDoc.email,
+        avatar: userDoc.avatar,
+      });
+    });
+  } catch (error) {
+    console.error('Profile Update Error:', error);
+    res.status(500).json('Server error');
+  }
+});
+
+app.get('/user/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json('User not found');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json('Server error');
+  }
 });
 
 // Logout
