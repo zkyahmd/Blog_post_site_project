@@ -37,10 +37,10 @@ import Editor from "../Editor";
         setPreview(previewUrl);
     
     
-        setTimeout(() => {
-          setPreview(null);
-          URL.revokeObjectURL(previewUrl); 
-        }, 5000); 
+        // setTimeout(() => {
+        //   setPreview(null);
+        //   URL.revokeObjectURL(previewUrl); 
+        // }, 5000); 
       }
     };
     async function createNewPost(ev) {

@@ -24,10 +24,10 @@ export default function EditPost() {
         setPreview(previewUrl);
     
     
-        setTimeout(() => {
-          setPreview(null);
-          URL.revokeObjectURL(previewUrl); 
-        }, 5000); 
+        // setTimeout(() => {
+        //   setPreview(null);
+        //   URL.revokeObjectURL(previewUrl); 
+        // }, 5000); 
       }
     };
 

@@ -23,10 +23,11 @@ mongoose.connect("mongodb://localhost:27017/blogDb");
 
 // Register
 app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   try {
     const userDoc = await User.create({
       username,
+      email,
       password: bcrypt.hashSync(password, salt),
     });
     res.json(userDoc);
@@ -39,7 +40,11 @@ app.post('/register', async (req, res) => {
 // Login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const userDoc = await User.findOne({ username });
+  const isEmail = username.includes('@');
+
+  const userDoc = await User.findOne(
+    isEmail ? { email: username } : { username }
+  );
   const passOk = userDoc && bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {

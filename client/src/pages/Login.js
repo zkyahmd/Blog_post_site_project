@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 export default function Login() {
   const [username, setUsername] = useState('');
+  // const [loginIdentifier, setLoginIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
   const { setUserInfo } = useContext(UserContext);
@@ -36,10 +37,12 @@ export default function Login() {
   return (
     <form className="login" onSubmit={login}>
       <h1>Login</h1>
-      <input type="text"
-        placeholder="username"
+      <input
+        type="text"
+        placeholder="Username or Email"
         value={username}
-        onChange={ev => setUsername(ev.target.value)} />
+        onChange={(e) => setUsername(e.target.value)}
+      />
       <input type="password"
         placeholder="password"
         value={password}
