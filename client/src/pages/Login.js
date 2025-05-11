@@ -17,12 +17,16 @@ export default function Login() {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
-    if (response.ok) {
-      response.json().then(userInfo => {
-        setUserInfo(userInfo);
-        setRedirect(true);
-      });
-    } else {
+   if (response.ok) {
+  const data = await response.json();
+
+  // Fetch full user info including avatar
+  const userRes = await fetch(`http://localhost:4000/user/${data.id}`);
+  const fullUser = await userRes.json();
+
+  setUserInfo(fullUser);
+  setRedirect(true);
+} else {
       alert('wrong credentials');
     }
   }

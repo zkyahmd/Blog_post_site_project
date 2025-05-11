@@ -76,7 +76,7 @@ export default function ProfilePage() {
     return (
         <div className="profile-container">
             <div className="profile-header">
-                <button className="back-button">←</button>
+                <button className="back-button" onClick={() => navigate(-1)}>←</button>
                 <h2>Edit Profile</h2>
             </div>
 
