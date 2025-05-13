@@ -249,6 +249,31 @@ app.get('/post/:id', async (req, res) => {
   }
 });
 
+
+//Delete Post
+app.delete('/post/:id', async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) return res.status(401).json('Unauthorized');
+
+    try {
+      const postDoc = await Post.findById(req.params.id);
+      if (!postDoc) return res.status(404).json('Post not found');
+
+      const isAuthor = String(postDoc.author) === String(info.id);
+      if (!isAuthor) return res.status(403).json('Not authorized');
+
+      await Post.findByIdAndDelete(req.params.id);
+
+      res.json({ success: true, message: 'Post deleted successfully' });
+    } catch (error) {
+      console.error('Delete Post Error:', error);
+      res.status(500).json('Server error');
+    }
+  });
+});
+
+
 app.listen(4000, () => {
   console.log('Server running on http://localhost:4000');
 });

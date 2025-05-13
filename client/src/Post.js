@@ -22,6 +22,9 @@ export default function Post({ _id, title, summary, cover, content, createdAt, a
     return div.textContent || div.innerText || '';
   };
 
+  // Limit the number of characters in the summary
+  const truncatedSummary = summary.length > 200 ? `${summary.substring(0, 200)}...` : summary;
+
   return (
     <div className="post">
       <div className="image">
@@ -31,7 +34,6 @@ export default function Post({ _id, title, summary, cover, content, createdAt, a
       </div>
 
       <div className="text">
-        
         <Link to={`/post/${_id}`}>
           <h2 dangerouslySetInnerHTML={{ __html: highlightText(title, searchTerm) }}></h2>
         </Link>
@@ -40,27 +42,11 @@ export default function Post({ _id, title, summary, cover, content, createdAt, a
           <time>{formatISO9075(new Date(createdAt))}</time>
         </p>
 
-       
-        <p className="summary" dangerouslySetInnerHTML={{ __html: highlightText(safeText(summary), searchTerm) }}></p>
-        <div className="content" dangerouslySetInnerHTML={{ __html: highlightText(safeText(content), searchTerm) }}></div>
+   
+        <p className="summary" dangerouslySetInnerHTML={{ __html: highlightText(safeText(truncatedSummary), searchTerm) }}></p>
+
+        <Link to={`/post/${_id}`} className="see-more" style={{ cursor: 'pointer', color: '#007bff' }}>See more...</Link>
       </div>
     </div>
- 
-
-        // <div className="post">
-        // <div className="image"><img src="/images/post_one.jpg" alt="post" /></div>
-
-        // <div className="text"> <h2>Flower Business</h2><p className="info"><a className="author">M.S Zaky Ahamed</a><time>2025-01-05 3.03</time></p>
-        // <p className="summary"> Flowers are awesome for peaceful life. If we have flowers in our house then our house is naturally amazing one.</p></div>
-
-        // </div>
-
-        // <div className="post">
-        // <div className="image"><img src="/images/post_one.jpg" alt="post" /></div>
-
-        // <div className="text"> <h2>Flower Business</h2><p className="info"><a className="author">M.S Zaky Ahamed</a><time>2025-01-05 3.03</time></p>
-        // <p className="summary"> Flowers are awesome for peaceful life. If we have flowers in our house then our house is naturally amazing one.</p></div>
-
-        // </div>
-    );
+  );
 }
