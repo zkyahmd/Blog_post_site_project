@@ -1,13 +1,14 @@
 body {
   background-image: linear-gradient(90deg, #e0e1dd);
+   overflow-x: hidden; 
 
 }
 
 main {
   padding: 10px;
   max-width: 1000px;
-  max-height: px;
   margin: 0 auto;
+  box-sizing: border-box;
 
 }
 
@@ -54,7 +55,7 @@ header a.logo {
   margin: 0;
   padding: 0;
   line-height: 1;
-  /* keeps it aligned */
+  
 }
 
 header a:hover {
@@ -74,20 +75,15 @@ header a.logout:hover {
 header nav {
   display: flex;
   align-items: center;
-  /* aligns items like avatar & links */
   gap: 15px;
 }
-
-/* .post img{
-    width: 600px;
-    height: 600px;
-} */
 
 div.post {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
   margin-bottom: 30px;
+  overflow: hidden; /* post container to contain overflowing content */
 }
 
 @media screen and (min-width: 700px) {
@@ -96,21 +92,62 @@ div.post {
   }
 }
 
-/* div.post img{
-    width: 50%;
-
-} */
+div.post div.text {
+  box-sizing: border-box; 
+  width: 100%; 
+  overflow: hidden;
+}
 
 div.post div.text h2 {
   margin: 0;
   font-size: 1.8rem;
   text-align: left;
+  word-break: break-word !important; 
+  overflow-wrap: break-word !important; 
+  line-height: 1.2; 
+}
 
+div.post div.text p.summary {
+
+  margin: 10px 0;
+  line-height: 1.4rem;
+  word-break: break-word !important; 
+  overflow-wrap: break-word !important; 
 }
 
 div.post div.text a {
   text-decoration: none;
   color: inherit;
+  word-break: break-word; /* Force line breaks within words */
+  overflow-wrap: break-word;
+}
+
+div.post div.text p { 
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+
+.ql-editor {
+  word-break: break-word !important; 
+  overflow-wrap: break-word !important; 
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.ql-editor p { 
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.ql-editor * { 
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.post-content-paragraph { 
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 div.post p.info {
@@ -120,19 +157,28 @@ div.post p.info {
   font-weight: bold;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 div.post p.info a.author {
   /* authorlink*/
   color: #333;
-
 }
 
-div.post p.summary {
+div.post div.text h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  text-align: left;
+  word-break: break-word !important; /*!important for override */
+  overflow-wrap: break-word !important;
+}
+
+div.post div.text p.summary {
   /*fix description*/
   margin: 10px 0;
   line-height: 1.4rem;
-
+  word-break: break-word !important; 
+  overflow-wrap: break-word !important; 
 }
 
 /*css for authentication*/
@@ -185,10 +231,19 @@ button:hover {
 }
 
 /* Form Title */
+div.post-page h1 {
+  text-align: center;
+  margin: 10px 0 5px;
+  word-break: break-word !important; /* Ensure breaking */
+  overflow-wrap: break-word !important; 
+}
+
 h1 {
   font-size: 1.8rem;
   text-align: center;
   margin-bottom: 20px;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important; 
 }
 
 /* Adding spacing for the forms */
@@ -207,6 +262,8 @@ form>* {
   border-radius: 10px;
   background: #f0f4f8;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+   word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 /* Input styling */
@@ -215,6 +272,8 @@ form>* {
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+   word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 .file-input {
@@ -272,8 +331,8 @@ form>* {
   transition: background 0.3s ease;
   width: 100%;
   max-width: 400px;
-  margin-top: 10px; /* Ensure space between editor and button */
-  display: block; /* Ensure it's a block-level element */
+  margin-top: 10px; 
+  display: block; 
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
@@ -497,13 +556,6 @@ header input[type="text"]:focus {
   color: inherit;
 }
 
-/* .search-wrapper {
-  background: none;
-  background-color: transparent;
-  padding: 20px 30px;
-  display: flex;
-  justify-content: center;
-} */
 /* Ensure that the container is responsive */
 @media screen and (max-width: 768px) {
   .search-results {
@@ -596,7 +648,6 @@ a svg {
   border: none;
   font-size: 1.5rem;
   color: #333;
-  /* or any visible color */
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
@@ -724,4 +775,44 @@ a svg {
     padding: 10px;
     box-sizing: border-box;
   }
+}
+/* Example of a potential parent container */
+.parent-container {
+    padding: 20px;
+    border: 1px solid blue;
+    box-sizing: border-box; /* Ensure padding and border are within the width */
+    width: 100%;
+    max-width: 800px; 
+    margin: 0 auto; /* Center the container */
+}
+
+.text-input {
+    width: 100%;
+    resize: vertical;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    word-break: break-word;
+    white-space: pre-wrap;
+    box-sizing: border-box; 
+}
+
+.content {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box;
+  width: 100%; /* Ensure it respects the parent's width */
+}
+
+.content p { 
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.content * { 
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }

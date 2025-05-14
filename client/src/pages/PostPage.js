@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { formatISO9075 } from "date-fns";
 import { UserContext } from "../UserContext";
-// import { useNavigate } from "react-router-dom";
 
 export default function PostPage() {
     const [postInfo, setPostInfo] = useState(null);

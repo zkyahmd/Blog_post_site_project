@@ -2,9 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './Header';
 import Post from './Post';
-// import Login from './Login';
-// import Register from './Register';
-//import post_one from './images/post_one.jpg';
+
 import Layout from './Layout';
 import IndexPage from './pages/IndexPage';
 import Login from './pages/Login';

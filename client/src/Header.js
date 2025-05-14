@@ -1,8 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
-//import defaultAvatar from './defaultAvatar.png';
-//import defaultAvatar from './images/defaultAvatar.jpg';
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);

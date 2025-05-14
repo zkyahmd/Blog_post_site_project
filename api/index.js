@@ -57,7 +57,6 @@ app.post('/login', async (req, res) => {
 });
 
 // Profile
-// Profile
 app.get('/profile', async (req, res) => {
   const { token } = req.cookies;
   if (!token) return res.status(401).json('No token');
