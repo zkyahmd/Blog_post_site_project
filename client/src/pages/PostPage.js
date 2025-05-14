@@ -56,7 +56,7 @@ export default function PostPage() {
   className="delete-btn"  onClick={handleDelete} 
 style={{
   backgroundColor: '#333',
-  backgroundImage: 'none', // ✅ string value
+  backgroundImage: 'none', 
   display: 'inline-flex',
   alignItems: 'center',
   gap: '5px',

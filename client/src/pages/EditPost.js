@@ -11,6 +11,7 @@ export default function EditPost() {
     const [summary,setSummary] = useState('');
     const [content,setContent] = useState('');
     const [files, setFiles] = useState('');
+    const [existingImage, setExistingImage] = useState(null);
     const [redirect,setRedirect] = useState(false);
 
     const [preview, setPreview] = useState(null);
@@ -38,6 +39,7 @@ export default function EditPost() {
               setTitle(postInfo.title);
               setContent(postInfo.content);
               setSummary(postInfo.summary);
+              setExistingImage(`http://localhost:4000/${postInfo.cover}`);
             });
           });
       }, []);
@@ -99,18 +101,30 @@ export default function EditPost() {
             className="file-input"
             accept="image/*"            
             onChange={handleFileChange} />  
-              {preview && (
-            <img
-              src={preview}
-              alt="Preview"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '500px',
-                borderRadius: '8px',
-                margin: '10px 0'
-              }}
-            />
-          )}
+         {preview ? (
+  <img
+    src={preview}
+    alt="New preview"
+    style={{
+      maxWidth: '100%',
+      maxHeight: '500px',
+      borderRadius: '8px',
+      margin: '10px 0'
+    }}
+  />
+) : existingImage && (
+  <img
+    src={existingImage}
+    alt="Current cover"
+    style={{
+      maxWidth: '100%',
+      maxHeight: '500px',
+      borderRadius: '8px',
+      margin: '10px 0'
+    }}
+  />
+)}
+
                <Editor onChange={setContent} value={content} />
               <button type="submit" className="submit-btn">Update Post</button>
             </form>
