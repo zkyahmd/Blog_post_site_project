@@ -1,7 +1,13 @@
 body {
   background-image: linear-gradient(90deg, #e0e1dd);
-   overflow-x: hidden; 
+   /* overflow-x: hidden;  */
 
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    overflow-x: auto; 
+  }
 }
 
 main {
@@ -17,6 +23,7 @@ img {
   height: 300px;
   object-fit: cover;
   border-radius: 8px;
+  max-width: none; 
 }
 
 header {
