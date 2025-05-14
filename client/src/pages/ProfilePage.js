@@ -44,34 +44,46 @@ export default function ProfilePage() {
             setPreview(URL.createObjectURL(file));
         }
     }
-
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (!username.trim() || !email.trim()) {
+            alert('Username and Email are required.');
+            return;
+        }
+
         const data = new FormData();
         data.set('username', username);
         data.set('email', email);
         if (password) data.set('password', password);
         if (avatar) data.set('avatar', avatar);
 
-        const response = await fetch('http://localhost:4000/profile', {
-            method: 'PUT',
-            body: data,
-            credentials: 'include',
-        });
+        try {
+            const response = await fetch('http://localhost:4000/profile', {
+                method: 'PUT',
+                body: data,
+                credentials: 'include',
+            });
 
-        if (response.ok) {
-            const resUser = await response.json();
+            if (response.ok) {
+                const resUser = await response.json();
 
-            // Refetch fresh user data to ensure avatar updates
-            const refetch = await fetch(`http://localhost:4000/user/${resUser.id}`);
-            const fullUser = await refetch.json();
+                const refetch = await fetch(`http://localhost:4000/user/${resUser.id}`);
+                const fullUser = await refetch.json();
 
-            setUserInfo(fullUser);
-            navigate('/');
-        } else {
-            alert('Failed to update profile');
+                setUserInfo(fullUser);
+                navigate('/');
+            } else {
+                const errorText = await response.text();
+                console.error('Failed to update profile:', errorText);
+                alert('Failed to update profile');
+            }
+        } catch (error) {
+            console.error('Network or server error:', error);
+            alert('Network error while updating profile.');
         }
     }
+
 
     return (
         <div className="profile-container">
