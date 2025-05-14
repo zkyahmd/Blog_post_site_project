@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -25,11 +26,12 @@ export default function Login() {
   const fullUser = await userRes.json();
 
   setUserInfo(fullUser);
-  setRedirect(true);
-} else {
-      alert('wrong credentials');
-    }
+ toast.success('Login successful!');
+    setRedirect(true);
+  } else {
+    toast.error('Wrong credentials. Try again.');
   }
+}
   //   // if (response.ok) {
   //   //   setRedirect(true);
   // }else {

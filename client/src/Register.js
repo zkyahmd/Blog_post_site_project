@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+   const navigate = useNavigate(); 
 
 
   async function register(ev) {
@@ -16,11 +18,12 @@ export default function Register() {
       body: JSON.stringify({ username, email, password }),
       headers: { 'Content-Type': 'application/json' },
     });
-    if (response.status === 200) {
-      alert('registration successful');
-    } else {
-      alert('registration failed');
-    }
+   if (response.status === 200) {
+  toast.success('Registration successful!');
+  navigate('/login');
+} else {
+  toast.error('Registration failed. Please try again.');
+}
   }
   return (
     <form action="" className='register' onSubmit={register}>

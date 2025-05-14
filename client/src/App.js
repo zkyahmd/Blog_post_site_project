@@ -15,11 +15,15 @@ import PostPage from './pages/PostPage';
 import EditPost from './pages/EditPost';
 import ProfilePage from './pages/ProfilePage';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function App() {
   return (
     <UserContextProvider>
+      <>
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<main><IndexPage /></main>} />
@@ -32,6 +36,9 @@ function App() {
         </Route>
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
+     
+        <ToastContainer position="top-center" autoClose={3000} />
+        </>
     </UserContextProvider>
 
 
