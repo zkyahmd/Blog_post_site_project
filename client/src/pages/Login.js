@@ -32,7 +32,7 @@ export default function Login() {
 
         setUserInfo(fullUser);
         toast.success("Login successful!");
-        setStatus({ redirect: true });
+        setStatus({ redirect: true, role: fullUser.role });
       } else {
         toast.error("Wrong credentials. Try again.");
       }
@@ -40,9 +40,10 @@ export default function Login() {
     },
   });
 
-  if (formik.status?.redirect) {
-    return <Navigate to="/" />;
-  }
+  if (formik.status?.redirect && formik.status.role) {
+  return <Navigate to={formik.status.role === "admin" ? "/admin" : "/"} />;
+}
+
 
   return (
     <form className="login" onSubmit={formik.handleSubmit}>

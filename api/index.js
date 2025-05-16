@@ -45,42 +45,149 @@ app.post('/login', async (req, res) => {
   const userDoc = await User.findOne(
     isEmail ? { email: username } : { username }
   );
+
   const passOk = userDoc && bcrypt.compareSync(password, userDoc.password);
+
   if (passOk) {
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) return res.status(500).json('Token error');
-      res.cookie('token', token).json({ id: userDoc._id, username });
-    });
+    // Add role to token and response
+    jwt.sign(
+      { username, id: userDoc._id, role: userDoc.role }, // include role here
+      secret,
+      {},
+      (err, token) => {
+        if (err) return res.status(500).json('Token error');
+        res.cookie('token', token).json({
+          id: userDoc._id,
+          username: userDoc.username,
+          role: userDoc.role, // include in response
+        });
+      }
+    );
   } else {
     res.status(400).json('wrong credentials');
   }
 });
 
-// Profile
-app.get('/profile', async (req, res) => {
+function verifyAdmin(req, res, next) {
   const { token } = req.cookies;
-  if (!token) return res.status(401).json('No token');
+  if (!token) return res.status(401).json('No token provided');
 
-  jwt.verify(token, secret, {}, async (err, info) => {
+  jwt.verify(token, secret, {}, (err, userInfo) => {
     if (err) return res.status(401).json('Invalid token');
 
-    try {
-      const userDoc = await User.findById(info.id);
-      if (!userDoc) return res.status(404).json('User not found');
-
-      res.json({
-        id: userDoc._id,
-        username: userDoc.username,
-        email: userDoc.email,
-        avatar: userDoc.avatar || null,
-      });
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-      res.status(500).json('Server error');
+    if (userInfo.role !== 'admin') {
+      return res.status(403).json('Access denied: Admins only');
     }
+    req.user = userInfo; // attach user info to req
+    next();
   });
+}
+// app.get('/admin/users', verifyAdmin, async (req, res) => {
+//   const users = await User.find({});
+//   res.json(users);
+// });
+
+// Get all users (admin only)
+app.get('/admin/users', verifyAdmin, async (req, res) => {
+  const users = await User.find({}, '-password'); // exclude passwords
+  res.json(users);
 });
 
+// Delete a user by id (admin only)
+app.delete('/admin/user/:id', verifyAdmin, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted' });
+  } catch (e) {
+    res.status(500).json('Server error');
+  }
+});
+
+// Update user role (admin only)
+app.put('/admin/user/:id/role', verifyAdmin, async (req, res) => {
+  const { role } = req.body; // 'user' or 'admin'
+  if (!['user', 'admin'].includes(role)) return res.status(400).json('Invalid role');
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, { role }, { new: true });
+    res.json(updatedUser);
+  } catch (e) {
+    res.status(500).json('Server error');
+  }
+});
+
+// List all posts (admin only)
+app.get('/admin/posts', verifyAdmin, async (req, res) => {
+  const posts = await Post.find().populate('author', 'username email role');
+  res.json(posts);
+});
+
+// Delete a post by id (admin only)
+app.delete('/admin/post/:id', verifyAdmin, async (req, res) => {
+  try {
+    await Post.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Post deleted' });
+  } catch (e) {
+    res.status(500).json('Server error');
+  }
+});
+
+
+app.get('/admin/posts/:userId', verifyAdmin, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const posts = await Post.find({ author: userId }).sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json('Error fetching posts');
+  }
+});
+// const bcrypt = require('bcryptjs');
+// const User = require('./models/User'); // adjust path if needed
+
+async function createDefaultAdmin() {
+  const existingAdmin = await User.findOne({ username: 'admin' });
+  if (!existingAdmin) {
+    const hashedPassword = bcrypt.hashSync('admin123', 10);
+    await User.create({
+      username: 'admin',
+      email: 'admin@example.com',
+      password: hashedPassword,
+      role: 'admin',
+    });
+    console.log('✅ Default admin created: username=admin, password=admin123');
+  } else {
+    console.log('✅ Default admin already exists');
+  }
+}
+
+createDefaultAdmin();
+
+
+// Profile
+app.get('/profile', async (req, res) => {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json('No token');
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) return res.status(401).json('Invalid token');
+
+        try {
+            const userDoc = await User.findById(info.id);
+            if (!userDoc) return res.status(404).json('User not found');
+
+            res.json({
+                id: userDoc._id,
+                username: userDoc.username,
+                email: userDoc.email,
+                avatar: userDoc.avatar || null,
+                role: userDoc.role, 
+            });
+        } catch (error) {
+            console.error('Profile fetch error:', error);
+            res.status(500).json('Server error');
+        }
+    });
+});
 
 app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
   try {
@@ -204,8 +311,13 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
       const postDoc = await Post.findById(id);
       if (!postDoc) return res.status(404).json('Post not found');
 
+      // Check if the user is the author OR an admin
       const isAuthor = String(postDoc.author) === String(info.id);
-      if (!isAuthor) return res.status(403).json('Not the author');
+      const isAdmin = info.role === 'admin';
+
+      if (!isAuthor && !isAdmin) {
+        return res.status(403).json('Not authorized');
+      }
 
       postDoc.title = title;
       postDoc.summary = summary;
@@ -220,7 +332,6 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     res.status(500).json('Server error');
   }
 });
-
 // Get all posts
 app.get('/post', async (req, res) => {
   try {
