@@ -581,7 +581,7 @@ header input[type="text"]:focus {
 }
 
 .search-bar {
-  width: 250px;
+  width: 450px;
   padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
@@ -989,20 +989,22 @@ a svg {
 }
 
 .post-card button.bg-yellow-500 {
-  background-color: #f59e0b;
+  background-color: #27ac30;
+  background-image: none;
   margin-right: 10px;
 }
 
 .post-card button.bg-yellow-500:hover {
-  background-color: #d97706;
+  background-color: #34d906;
 }
 
 .post-card button.bg-red-500 {
   background-color: #ef4444;
+  background-image: none;
 }
 
 .post-card button.bg-red-500:hover {
-  background-color: #dc2626;
+  background-color: #d25656;
 }
 .post-card h2 a {
   color: #151515;
