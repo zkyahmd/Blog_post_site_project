@@ -197,14 +197,46 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) return res.status(401).json('Token error');
       const userId = info.id;
-      const { username, email, password } = req.body;
+      const {
+        username,
+        email,
+        currentPassword,
+        newPassword,
+        confirmPassword
+      } = req.body;
 
-      const updates = { username, email };
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json('User not found');
 
-      if (password && password.length >= 4) {
-        updates.password = bcrypt.hashSync(password, salt);
+      // Prepare updates
+      const updates = {
+        username: username || user.username,
+        email: email || user.email
+      };
+
+      // ✅ Handle password update with proper validation
+      if (currentPassword || newPassword || confirmPassword) {
+        if (!currentPassword) {
+          return res.status(400).json('Current password is required');
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+          return res.status(400).json('Current password is incorrect');
+        }
+
+        if (!newPassword || newPassword.length < 4) {
+          return res.status(400).json('New password must be at least 4 characters');
+        }
+
+        if (newPassword !== confirmPassword) {
+          return res.status(400).json('New passwords do not match');
+        }
+
+        updates.password = bcrypt.hashSync(newPassword, salt);
       }
 
+      // ✅ Handle avatar update
       if (req.file) {
         const { originalname, path } = req.file;
         const ext = originalname.split('.').pop();
@@ -213,6 +245,7 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
         updates.avatar = newPath;
       }
 
+      // ✅ Save updated user info
       const userDoc = await User.findByIdAndUpdate(userId, updates, { new: true });
 
       res.json({
@@ -227,6 +260,7 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
     res.status(500).json('Server error');
   }
 });
+
 
 app.get('/user/:id', async (req, res) => {
   try {

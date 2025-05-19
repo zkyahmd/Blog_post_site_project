@@ -1,12 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProfilePage() {
     const { userInfo, setUserInfo } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [avatar, setAvatar] = useState(null);
     const [preview, setPreview] = useState(null);
     const navigate = useNavigate();
@@ -44,18 +48,26 @@ export default function ProfilePage() {
             setPreview(URL.createObjectURL(file));
         }
     }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
         if (!username.trim() || !email.trim()) {
-            alert('Username and Email are required.');
+            toast.error('Username and Email are required.');
+            return;
+        }
+
+        if (newPassword && newPassword !== confirmPassword) {
+            toast.error("New password and confirmation do not match.");
             return;
         }
 
         const data = new FormData();
         data.set('username', username);
         data.set('email', email);
-        if (password) data.set('password', password);
+        if (currentPassword) data.set('currentPassword', currentPassword);
+        if (newPassword) data.set('newPassword', newPassword);
+        if (confirmPassword) data.set('confirmPassword', confirmPassword);
         if (avatar) data.set('avatar', avatar);
 
         try {
@@ -67,23 +79,24 @@ export default function ProfilePage() {
 
             if (response.ok) {
                 const resUser = await response.json();
-
                 const refetch = await fetch(`http://localhost:4000/user/${resUser.id}`);
                 const fullUser = await refetch.json();
-
                 setUserInfo(fullUser);
-                navigate('/');
+
+                toast.success('Profile updated successfully!');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
             } else {
                 const errorText = await response.text();
                 console.error('Failed to update profile:', errorText);
-                alert('Failed to update profile');
+                toast.error(`Failed to update: ${errorText}`);
             }
         } catch (error) {
             console.error('Network or server error:', error);
-            alert('Network error while updating profile.');
+            toast.error('Network error while updating profile.');
         }
     }
-
 
     return (
         <div className="profile-container">
@@ -122,12 +135,30 @@ export default function ProfilePage() {
                     />
                 </label>
                 <label>
-                    New Password (optional)
+                    Current Password
                     <input
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="Enter current password"
+                    />
+                </label>
+                <label>
+                    New Password
+                    <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Enter new password"
+                    />
+                </label>
+                <label>
+                    Confirm New Password
+                    <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm new password"
                     />
                 </label>
                 <button type="submit" className="save-button">Save</button>
