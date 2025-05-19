@@ -51,7 +51,7 @@ app.post('/login', async (req, res) => {
   if (passOk) {
     // Add role to token and response
     jwt.sign(
-      { username, id: userDoc._id, role: userDoc.role }, // include role here
+      { username, id: userDoc._id, role: userDoc.role }, 
       secret,
       {},
       (err, token) => {
@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
         res.cookie('token', token).json({
           id: userDoc._id,
           username: userDoc.username,
-          role: userDoc.role, // include in response
+          role: userDoc.role, 
         });
       }
     );
@@ -214,7 +214,7 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
         email: email || user.email
       };
 
-      // ✅ Handle password update with proper validation
+      //  Handle password update with proper validation
       if (currentPassword || newPassword || confirmPassword) {
         if (!currentPassword) {
           return res.status(400).json('Current password is required');
@@ -236,7 +236,7 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
         updates.password = bcrypt.hashSync(newPassword, salt);
       }
 
-      // ✅ Handle avatar update
+      //  Handle avatar update
       if (req.file) {
         const { originalname, path } = req.file;
         const ext = originalname.split('.').pop();
@@ -245,7 +245,7 @@ app.put('/profile', uploadMiddleware.single('avatar'), async (req, res) => {
         updates.avatar = newPath;
       }
 
-      // ✅ Save updated user info
+      //  Save updated user info
       const userDoc = await User.findByIdAndUpdate(userId, updates, { new: true });
 
       res.json({
