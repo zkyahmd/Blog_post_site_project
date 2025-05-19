@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 export default function AdminPage() {
   const { userInfo } = useContext(UserContext);
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for the search term
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,11 +22,33 @@ export default function AdminPage() {
     return <Navigate to="/" />;
   }
 
+  // Function to handle search
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filter users based on the search term with null checks
+  const filteredUsers = users.filter((user) =>
+    (user.username?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="admin-page">
       <h1>Welcome, Admin!</h1>
-      <h2>Users List</h2>
 
+      {/* Search Bar */}
+      <div className="search-bar1" style={{ marginBottom: '20px', width: '400px' }}>
+        <input
+          type="text"
+          placeholder="Search Users..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar-field"
+        />
+      </div>
+
+      <h2>Users List</h2>
       <table>
         <thead>
           <tr>
@@ -36,7 +59,7 @@ export default function AdminPage() {
           </tr>
         </thead>
         <tbody>
-          {users
+          {filteredUsers
             .filter((u) => u._id !== userInfo._id) // exclude logged-in admin
             .map((user) => (
               <tr key={user._id}>

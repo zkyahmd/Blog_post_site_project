@@ -120,8 +120,12 @@ div.post div.text p.summary {
   line-height: 1.4rem;
   word-break: break-word !important; 
   overflow-wrap: break-word !important; 
+      display: inline;
 }
-
+div.post div.text a.see-more {
+    display: inline; /* Make the link display inline as well */
+    margin-left: 5px; /* Add a small left margin for spacing from the summary */
+}
 div.post div.text a {
   text-decoration: none;
   color: inherit;
@@ -1028,4 +1032,18 @@ a svg {
   font-size: 14px;
   color: #6b7280;
   margin-bottom: 12px;
+}
+
+.search-bar-field {
+  width: 400px;       
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-bar-field:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
